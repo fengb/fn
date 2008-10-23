@@ -1,0 +1,13 @@
+{% extends 'fn/base.html' %}
+
+
+{% block title %}fn.blog{% endblock %}
+
+
+{% block content %}
+<ul>
+  {% for blog in blogs %}
+    <li><a href="{%url blog.views.show_blog blog.owner.username%}">{{blog.owner.username}} - {{blog.name}}</a></li>
+  {% endfor %}
+</ul>
+{% endblock %}
