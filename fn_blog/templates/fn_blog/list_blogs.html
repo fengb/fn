@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Blogs{% endblock %}
+{% block content_title %}Blogs{% endblock %}
+
+{% block content %}
+  {% if blogs %}
+    <ul>
+      {% for blog in blogs %}
+        <li><a href="{%url fn_blog.views.show_blog
+          blog.owner.username%}">{{blog.owner.username}} - {{blog.name}}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No blogs found</p>
+  {% endif %}
+{% endblock %}
