@@ -8,5 +8,5 @@ setup(
     author='Benjamin Feng',
     license='3-clause BSD',
     packages=['fn_blog'],
-    package_data={'fn_blog': ['templates/**.html']},
+    package_data={'fn_blog': ['templates/base.html', 'templates/fn_blog/*.html']},
 )
