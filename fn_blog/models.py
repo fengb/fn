@@ -29,5 +29,5 @@ class Entry(Model):
         return self.title
 
     def save(self):
-        self.internal = ''.join(c for c in self.title.lower() if c in alphanumeric)
+        self.internal = ''.join(c for c in self.title.lower() if c in alphanumeric)[0:10]
         Model.save(self)
