@@ -8,8 +8,7 @@
   {% if entries %}
     <ul>
       {% for entry in entries %}
-        <li><a href="{%url fn_blog.views.show_entry
-          owner.username entry.internal%}">{{entry.title}}</a></li>
+        <li><a href="{%url fn_blog.views.show_entry owner.username entry.internal%}">{{entry.title}}</a></li>
       {% endfor %}
     </ul>
   {% else %}
