@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}{{blog.name}}{% endblock %}
+{% block content_title %}{{blog.name}}{% endblock %}
+
+{% block content %}
+{% if entries %}
+<ul>
+  {% for entry in entries %}
+  <li><a href="{{entry.get_absolute_url}}">{{entry.title}}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No entries found</p>
+{% endif %}
+{% endblock %}

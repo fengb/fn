@@ -17,17 +17,20 @@ class Blog(Model):
     def __str__(self):
         return self.name
 
+    @permalink
+    def get_absolute_url(self):
+        return 'fn_blog.blog', [self.id]
+
 
 class Entry(Model):
     blog = ForeignKey(Blog)
     title = CharField(max_length=100)
-    internal = CharField(max_length=10, unique=True)
     body = TextField()
     created = DateField(auto_now=True)
 
     def __str__(self):
         return self.title
 
-    def save(self):
-        self.internal = ''.join(c for c in self.title.lower() if c in alphanumeric)[0:10]
-        Model.save(self)
+    @permalink
+    def get_absolute_url(self):
+        return 'fn_blog.entry', [self.id]

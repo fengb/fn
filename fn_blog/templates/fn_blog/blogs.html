@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block title %}Blogs{% endblock %}
+{% block content_title %}Blogs{% endblock %}
+
+{% block content %}
+{% if blogs %}
+<ul>
+  {% for blog in blogs %}
+  <li><a href="{{blog.get_absolute_url}}">{{blog.id}} - {{blog.name}}</a></li>
+  {% endfor %}
+</ul>
+{% else %}
+  <p>No blogs found</p>
+{% endif %}
+{% endblock %}
