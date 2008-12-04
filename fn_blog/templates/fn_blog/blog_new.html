@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+
+{% block title %}New Blog{% endblock %}
+{% block content_title %}New Blog{% endblock %}
+
+{% block content %}
+<form action="{% url fn_blog.blogs %}" method="POST">
+  {{form.as_p}}
+  <input type="submit" value="Submit" />
+</form>
+{% endblock %}
