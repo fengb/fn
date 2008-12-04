@@ -72,7 +72,7 @@ class DispatchClass(object):
         for name in dir(resource_class):
             try:
                 attribute = getattr(resource_class, name)
-                self.supported[attribute.fn_rest_method] = attribute
+                self.supported[attribute.fn_rest_method] = name
             except AttributeError:
                 pass
 
@@ -82,7 +82,12 @@ class DispatchClass(object):
         else:
             try:
                 resource = self.resource_class(*args, **kwargs)
-                return self.supported[request.method](resource, request)
+                # Calling an unbound method upon the resource is the simplest
+                # @login_required does not work with the unbound approach
+                #return self.supported[request.method](resource, request)
+
+                attr_name = self.supported[request.method]
+                return getattr(resource, attr_name)(request)
             except ObjectDoesNotExist:
                 raise Http404
 
