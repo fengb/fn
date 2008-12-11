@@ -19,7 +19,7 @@ class Blog(Model):
 
     @permalink
     def get_absolute_url(self):
-        return 'fn_blog.blog', [self.id]
+        return 'fn_blog.blog.__member__', [self.id]
 
 
 class Entry(Model):
@@ -33,4 +33,4 @@ class Entry(Model):
 
     @permalink
     def get_absolute_url(self):
-        return 'fn_blog.entry', [self.id]
+        return 'fn_blog.entry.__member__', [self.id]

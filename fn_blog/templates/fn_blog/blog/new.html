@@ -5,7 +5,7 @@
 {% block content_title %}New Blog{% endblock %}
 
 {% block content %}
-<form action="{% url fn_blog.blogs %}" method="POST">
+<form action="{% url fn_blog.blog.__collection__ %}" method="POST">
   {{form.as_p}}
   <input type="submit" value="Submit" />
 </form>

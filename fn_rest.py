@@ -2,6 +2,7 @@ from functools import partial
 
 from django.http import Http404, HttpResponseNotAllowed
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf.urls import defaults as django
 
 
 """
@@ -36,19 +37,6 @@ from django.core.exceptions import ObjectDoesNotExist
 >>> dr(Request('SUBTRACT'))
 Traceback (most recent call last):
 HttpResponseNotAllowed
-
->>> @fn_rest.method('PUT')
-... def add(a, b):
-...     return a + b
-...
->>> function(1, 2)
-3
->>> df = fn_rest.dispatch(add)
->>> df(Request('PUT')
-3
->>> df(Request('GET')
-Traceback (most recent call last):
-HttpResponseNotAllowed
 """
 
 
@@ -56,15 +44,31 @@ def _method_decorator(func, name):
     func.fn_rest_method = name
     return func
 
-
 def method(arg):
     if callable(arg):
-        return _method_decorator(arg, arg.func_name.upper())
+        return _method_decorator(arg, arg.__name__.upper())
     else:
         return partial(_method_decorator, name=arg)
 
 
-class DispatchClass(object):
+def _resource_decorator(cls, name):
+    cls.fn_rest_resource = name
+    return cls
+
+def resource(arg):
+    if callable(arg):
+        return _method_decorator(arg, arg.__name__.upper())
+    else:
+        return partial(_resource_decorator, name=arg)
+
+def collection(cls):
+    return _resource_decorator(cls, '__collection__')
+
+def member(cls):
+    return _resource_decorator(cls, '__member__')
+
+
+class Dispatch(object):
     def __init__(self, resource_class):
         self.resource_class = resource_class
         self.supported = {}
@@ -92,19 +96,21 @@ class DispatchClass(object):
                 raise Http404
 
 
-class DispatchFunction(object):
-    def __init__(self, function):
-        self.function = function
+def _gen_urls(prefix, module, namespace):
+    for name in dir(module):
+        attribute = getattr(module, name)
+        if hasattr(attribute, 'fn_rest_resource'):
+            resource_name = attribute.fn_rest_resource
 
-    def __call__(self, request, *args, **kwargs):
-        if request.method != self.function.fn_rest_method:
-            return HttpResponseNotAllowed([self.function.fn_rest_method])
-        else:
-            return self.function(request, *args, **kwargs)
+            if resource_name == '__collection__':
+                suffix = '$';
+            elif resource_name == '__member__':
+                suffix = r'(\d*)/$'
+            else:
+                suffix = resource_name + '/$'
+            yield django.url(prefix + suffix, Dispatch(attribute),
+                             name='.'.join([namespace, resource_name]))
 
 
-def dispatch(arg):
-    if hasattr(arg, 'fn_rest_method'):
-        return DispatchFunction(arg)
-    else:
-        return DispatchClass(arg)
+def patterns(prefix, module, namespace):
+    return django.patterns('', *_gen_urls(prefix, module, namespace))
