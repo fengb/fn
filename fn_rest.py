@@ -51,15 +51,17 @@ def method(arg):
         return partial(_method_decorator, name=arg)
 
 
-def _resource_decorator(cls, name):
+def _resource_decorator(cls, name, url):
     cls.fn_rest_resource = name
     return cls
 
-def resource(arg):
+def resource(arg, url=None):
     if callable(arg):
         return _method_decorator(arg, arg.__name__.upper())
+    elif url:
+        return partial(_resource_decorator, name=arg, url=url)
     else:
-        return partial(_resource_decorator, name=arg)
+        return partial(_resource_decorator, name=arg, url=arg)
 
 def collection(cls):
     return _resource_decorator(cls, '__collection__')
@@ -96,20 +98,16 @@ class Dispatch(object):
                 raise Http404
 
 
-def _gen_urls(prefix, module, namespace):
+def _gen_urls(base, module, namespace):
     for name in dir(module):
         attribute = getattr(module, name)
-        if hasattr(attribute, 'fn_rest_resource'):
-            resource_name = attribute.fn_rest_resource
+        try:
+            url = base + attribute.fn_rest_suffix
+            name = '.'.join([namespace, attribute.fn_rest_resource])
 
-            if resource_name == '__collection__':
-                suffix = '$';
-            elif resource_name == '__member__':
-                suffix = r'(\d*)/$'
-            else:
-                suffix = resource_name + '/$'
-            yield django.url(prefix + suffix, Dispatch(attribute),
-                             name='.'.join([namespace, resource_name]))
+            yield django.url(url, Dispatch(attribute), name=name)
+        except AttributeError:
+            pass
 
 
 def patterns(prefix, module, namespace):

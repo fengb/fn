@@ -11,6 +11,7 @@ from fn_blog import forms
 
 #@fn_rest.collection
 class Collection(object):
+    fn_rest_suffix = '$'
     fn_rest_resource = '__collection__'
 
     @login_required
@@ -22,6 +23,7 @@ class Collection(object):
 
 #@fn_rest.member
 class Member(object):
+    fn_rest_suffix = r'(\d*)/$'
     fn_rest_resource = '__member__'
 
     def __init__(self, id):
@@ -37,6 +39,7 @@ class Member(object):
 
 #@fn_rest.resource
 class New(object):
+    fn_rest_suffix = 'new/$'
     fn_rest_resource = 'new'
 
     @login_required
