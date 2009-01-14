@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load fn_markup %}
 
 
 {% block title %}{{blog.name}}{% endblock %}
@@ -7,6 +8,6 @@
 
 {% block content %}
   <p>
-    {{entry.body}}
+    {{entry.body|fn_markup}}
   </p>
 {% endblock %}

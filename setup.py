@@ -24,6 +24,6 @@ setup(
     author='Benjamin Feng',
     license='3-clause BSD',
     py_modules=['fn_rest'],
-    packages=list(all_packages('fn_blog')),
+    packages=list(all_packages('fn_blog')) + list(all_packages('fn_markup')),
     package_data={'fn_blog': list(all_files('fn_blog', 'templates'))},
 )
