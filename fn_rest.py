@@ -3,112 +3,85 @@ from functools import partial
 from django.http import Http404, HttpResponseNotAllowed
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import defaults as django
-
-
-"""
->>> import fn_rest
-
->>> class Resource(object):
-...     def __init__(self, a, b):
-...         self.a = a
-...         self.b = b
-
-...     @fn_rest.method
-...     def get(self, request):
-...         return (a, b)
-
-...     @fn_rest.method('POST')
-...     def subtract(self, request):
-...         return a - b
-...
-
->>> dr = fn_rest.dispatch(Resource)
-
->>> class Request(object):
-...     def __init__(self, method):
-...         self.method = method
-
->>> dr(Request('GET'))
-(1, 2)
-
->>> dr(Request('POST'))
--1
-
->>> dr(Request('SUBTRACT'))
-Traceback (most recent call last):
-HttpResponseNotAllowed
-"""
+from django.shortcuts import render_to_response
 
 
 def _method_decorator(func, name):
     func.fn_rest_method = name
     return func
 
-def method(arg):
-    if callable(arg):
-        return _method_decorator(arg, arg.__name__.upper())
+def method(name):
+    if callable(name):
+        return _method_decorator(name, name.__name__.upper())
     else:
-        return partial(_method_decorator, name=arg)
+        return partial(_method_decorator, name=name)
 
 
 def _resource_decorator(cls, name, url):
-    cls.fn_rest_resource = name
+    cls.fn_rest_name = name
+    cls.fn_rest_url = url
+
+    cls.fn_rest_methods = {}
+    for name in dir(cls):
+        try:
+            attribute = getattr(cls, name)
+            cls.fn_rest_methods[attribute.fn_rest_method] = name
+        except AttributeError:
+            pass
+
     return cls
 
-def resource(arg, url=None):
-    if callable(arg):
-        return _method_decorator(arg, arg.__name__.upper())
-    elif url:
-        return partial(_resource_decorator, name=arg, url=url)
+def resource(name, url):
+    return partial(_resource_decorator, name=name, url=url)
+
+def cresource(obj):
+    name = obj.__name__.lower()
+    return _resource_decorator(obj, name, r'%s$' % name)
+
+def mresource(obj):
+    name = obj.__name__.lower()
+    return _resource_decorator(obj, name, r'(\d)*/%s$' % name)
+
+collection = resource('__collection__', '$')
+member = resource('__member__', r'(\d*)/$')
+
+
+def _invoke_method(cls, request, *args, **kwargs):
+    if request.method not in cls.fn_rest_methods:
+        return HttpResponseNotAllowed(self.supported.keys())
     else:
-        return partial(_resource_decorator, name=arg, url=arg)
+        try:
+            resource = cls(*args, **kwargs)
+            # Calling an unbound method upon the resource is the simplest
+            # @login_required does not work with the unbound approach
+            #return cls.fn_rest_methods[request.method](resource, request)
 
-def collection(cls):
-    return _resource_decorator(cls, '__collection__')
+            method_name = cls.fn_rest_methods[request.method]
+            return getattr(resource, method_name)(request)
+        except ObjectDoesNotExist:
+            raise Http404
 
-def member(cls):
-    return _resource_decorator(cls, '__member__')
-
-
-class Dispatch(object):
-    def __init__(self, resource_class):
-        self.resource_class = resource_class
-        self.supported = {}
-
-        for name in dir(resource_class):
-            try:
-                attribute = getattr(resource_class, name)
-                self.supported[attribute.fn_rest_method] = name
-            except AttributeError:
-                pass
-
-    def __call__(self, request, *args, **kwargs):
-        if request.method not in self.supported:
-            return HttpResponseNotAllowed(self.supported.keys())
-        else:
-            try:
-                resource = self.resource_class(*args, **kwargs)
-                # Calling an unbound method upon the resource is the simplest
-                # @login_required does not work with the unbound approach
-                #return self.supported[request.method](resource, request)
-
-                attr_name = self.supported[request.method]
-                return getattr(resource, attr_name)(request)
-            except ObjectDoesNotExist:
-                raise Http404
-
+def dispatch(cls):
+    return partial(_invoke, cls)
 
 def _gen_urls(base, module, namespace):
     for name in dir(module):
         attribute = getattr(module, name)
         try:
-            url = base + attribute.fn_rest_suffix
-            name = '.'.join([namespace, attribute.fn_rest_resource])
+            url = base + attribute.fn_rest_url
+            name = '%s.%s' % (namespace, attribute.fn_rest_name)
 
-            yield django.url(url, Dispatch(attribute), name=name)
+            yield django.url(url, dispatch(attribute), name=name)
         except AttributeError:
             pass
 
 
 def patterns(prefix, module, namespace):
     return django.patterns('', *_gen_urls(prefix, module, namespace))
+
+def render(directory, obj, request, vars):
+    template = '%s/%s.%s' % (directory, obj.fn_rest_name, 'html')
+    return render_to_response(template, vars)
+
+def renderer(directory):
+    return partial(render, directory)

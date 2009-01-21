@@ -9,6 +9,8 @@ from fn_blog import models
 from fn_blog import forms
 
 
+render = fn_rest.renderer('fn_blog/entry')
+
 #@fn_rest.collection
 class Collection(object):
     fn_rest_suffix = '$'
@@ -19,6 +21,7 @@ class Collection(object):
     def post(self, request):
         entry = forms.Entry(request.POST).save()
         return HttpResponseRedirect(entry.get_absolute_url())
+Collection = fn_rest.collection(Collection)
 
 
 #@fn_rest.member
@@ -34,17 +37,16 @@ class Member(object):
         vars = {}
         vars['blog'] = self.resource.blog
         vars['entry'] = self.resource
-        return render_to_response('fn_blog/entry/__member__.html', vars)
+        return render(self, request, vars)
+Member = fn_rest.member(Member)
 
 
-#@fn_rest.resource
+#@fn_rest.cresource
 class New(object):
-    fn_rest_suffix = 'new/$'
-    fn_rest_resource = 'new'
-
     @login_required
     @fn_rest.method
     def get(self, request):
         vars = {}
         vars['form'] = forms.Entry()
-        return render_to_response('fn_blog/entry/new.html', vars)
+        return render(self, request, vars)
+New = fn_rest.cresource(New)
