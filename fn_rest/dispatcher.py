@@ -3,47 +3,6 @@ from functools import partial
 from django.http import Http404, HttpResponseNotAllowed
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf.urls import defaults as django
-from django.shortcuts import render_to_response
-
-
-def _method_decorator(func, name):
-    func.fn_rest_method = name
-    return func
-
-def method(name):
-    if callable(name):
-        return _method_decorator(name, name.__name__.upper())
-    else:
-        return partial(_method_decorator, name=name)
-
-
-def _resource_decorator(cls, name, url):
-    cls.fn_rest_name = name
-    cls.fn_rest_url = url
-
-    cls.fn_rest_methods = {}
-    for name in dir(cls):
-        try:
-            attribute = getattr(cls, name)
-            cls.fn_rest_methods[attribute.fn_rest_method] = name
-        except AttributeError:
-            pass
-
-    return cls
-
-def resource(name, url):
-    return partial(_resource_decorator, name=name, url=url)
-
-def cresource(obj):
-    name = obj.__name__.lower()
-    return _resource_decorator(obj, name, r'%s$' % name)
-
-def mresource(obj):
-    name = obj.__name__.lower()
-    return _resource_decorator(obj, name, r'(\d)*/%s$' % name)
-
-collection = resource('__collection__', '$')
-member = resource('__member__', r'(\d*)/$')
 
 
 def _invoke_method(cls, request, *args, **kwargs):
@@ -62,7 +21,8 @@ def _invoke_method(cls, request, *args, **kwargs):
             raise Http404
 
 def dispatch(cls):
-    return partial(_invoke, cls)
+    return partial(_invoke_method, cls)
+
 
 def _gen_urls(base, module, namespace):
     for name in dir(module):
@@ -78,10 +38,3 @@ def _gen_urls(base, module, namespace):
 
 def patterns(prefix, module, namespace):
     return django.patterns('', *_gen_urls(prefix, module, namespace))
-
-def render(directory, obj, request, vars):
-    template = '%s/%s.%s' % (directory, obj.fn_rest_name, 'html')
-    return render_to_response(template, vars)
-
-def renderer(directory):
-    return partial(render, directory)
