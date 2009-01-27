@@ -7,7 +7,7 @@ from django.conf.urls import defaults as django
 
 def _invoke_method(cls, request, *args, **kwargs):
     if request.method not in cls.fn_rest_methods:
-        return HttpResponseNotAllowed(self.supported.keys())
+        return HttpResponseNotAllowed(cls.fn_rest_methods.keys())
     else:
         try:
             resource = cls(*args, **kwargs)
