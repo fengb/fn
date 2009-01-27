@@ -13,6 +13,7 @@
 
   {% if form %}
     <form action="{{blog.get_absolute_uri}}" method="POST">
+      <input type="hidden" name="__method__" value="PUT"/>
       {{form.as_p}}
       <input type="submit" value="Submit" />
     </form>

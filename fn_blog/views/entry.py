@@ -31,6 +31,7 @@ class Member(object):
 
     def __init__(self, id):
         self.resource = models.Entry.objects.get(id=int(id))
+        self.form = forms.Entry(instance=self.resource)
 
     @fn_rest.method
     def get(self, request):
@@ -40,6 +41,12 @@ class Member(object):
         if request.user == vars['blog'].owner:
             vars['form'] = forms.Entry(instance=self.resource)
         return render(self, request, vars)
+
+    @login_required
+    @fn_rest.method
+    def put(self, request):
+        resource = forms.Entry(request.PUT, instance=self.resource).save()
+        return HttpResponseRedirect(resource.get_absolute_url())
 Member = fn_rest.member(Member)
 
 
