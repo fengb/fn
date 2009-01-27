@@ -36,7 +36,11 @@ class Member(object):
     def get(self, request):
         vars = {}
         vars['blog'] = self.resource
-        vars['entries'] = self.resource.entry_set.all()
+        if request.user == self.resource.owner:
+            vars['entries'] = self.resource.entry_set.all()
+        else:
+            vars['entries'] = self.resource.entry_set.filter(public=True)
+
         return render(self, request, vars)
 Member = fn_rest.member(Member)
 

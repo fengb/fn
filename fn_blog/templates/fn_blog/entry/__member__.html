@@ -10,4 +10,11 @@
   <div>
     {{entry.body|fn_markup}}
   </div>
+
+  {% if form %}
+    <form action="{{blog.get_absolute_uri}}" method="POST">
+      {{form.as_p}}
+      <input type="submit" value="Submit" />
+    </form>
+  {% endif %}
 {% endblock %}

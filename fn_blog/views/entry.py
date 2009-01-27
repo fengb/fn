@@ -37,6 +37,8 @@ class Member(object):
         vars = {}
         vars['blog'] = self.resource.blog
         vars['entry'] = self.resource
+        if request.user == vars['blog'].owner:
+            vars['form'] = forms.Entry(instance=self.resource)
         return render(self, request, vars)
 Member = fn_rest.member(Member)
 
