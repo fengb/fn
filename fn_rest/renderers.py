@@ -1,6 +1,6 @@
 from functools import partial
 
-from django.template import TemplateDoesNotExist
+from django.template import TemplateDoesNotExist, RequestContext
 from django.http import Http404
 from django.core import serializers
 from django.shortcuts import render_to_response as render_template
@@ -17,7 +17,8 @@ def render(directory, obj, request, vars):
     for mimetype, filetype in accepts:
         try:
             template = '%s/%s.%s' % (directory, obj.fn_rest_name, filetype)
-            return render_template(template, vars, mimetype=mimetype)
+            return render_template(template, vars, mimetype=mimetype,
+                                   context_instance=RequestContext(request))
         except TemplateDoesNotExist:
             #TODO: Attempt to render a serialized version
             pass

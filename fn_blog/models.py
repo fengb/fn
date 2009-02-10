@@ -28,7 +28,7 @@ class Entry(Model):
     title = CharField(max_length=100)
     body = TextField()
     public = BooleanField()
-    created = DateField(auto_now=True)
+    created = DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title

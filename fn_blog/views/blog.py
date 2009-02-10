@@ -17,6 +17,7 @@ class Collection(object):
     def get(self, request):
         vars = {}
         vars['blogs'] = models.Blog.objects.all()
+        vars['entries'] = models.Entry.objects.filter(public=True).order_by('-created')
         return render(self, request, vars)
 
     @login_required
@@ -37,9 +38,9 @@ class Member(object):
         vars = {}
         vars['blog'] = self.resource
         if request.user == self.resource.owner:
-            vars['entries'] = self.resource.entry_set.all()
+            vars['entries'] = self.resource.entry_set.order_by('-created')
         else:
-            vars['entries'] = self.resource.entry_set.filter(public=True)
+            vars['entries'] = self.resource.entry_set.filter(public=True).order_by('-created')
 
         return render(self, request, vars)
 Member = fn_rest.member(Member)
