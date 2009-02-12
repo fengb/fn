@@ -12,9 +12,16 @@ def method(name):
         return partial(_method_decorator, name=name)
 
 
-def _resource_decorator(cls, name, url):
+def _resource_decorator(cls, name, url, target=None):
     cls.fn_rest_name = name
     cls.fn_rest_url = url
+
+    app_name, sep, app_target = cls.__module__.partition('.views.')
+    app_name = app_name.split('.')[-1]
+    if not target:
+        cls.fn_rest_target = '/'.join([app_name, app_target.replace('.', '/'), name])
+    else:
+        cls.fn_rest_target = '/'.join([app_name, target])
 
     cls.fn_rest_methods = {}
     for name in dir(cls):
@@ -26,8 +33,8 @@ def _resource_decorator(cls, name, url):
 
     return cls
 
-def resource(name, url):
-    return partial(_resource_decorator, name=name, url=url)
+def resource(*args, **kwargs):
+    return lambda cls: _resource_decorator(cls, *args, **kwargs)
 
 def cresource(obj):
     name = obj.__name__.lower()

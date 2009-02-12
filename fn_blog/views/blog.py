@@ -1,4 +1,3 @@
-from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
 from django.contrib.auth.decorators import login_required
@@ -9,8 +8,6 @@ from fn_blog import models
 from fn_blog import forms
 
 
-render = fn_rest.renderer('fn_blog/blog')
-
 #@fn_rest.collection
 class Collection(object):
     @fn_rest.method
@@ -18,7 +15,7 @@ class Collection(object):
         vars = {}
         vars['blogs'] = models.Blog.objects.all()
         vars['entries'] = models.Entry.objects.filter(public=True).order_by('-created')
-        return render(self, request, vars)
+        return fn_rest.render(self, request, vars)
 
     @login_required
     @fn_rest.method
@@ -42,7 +39,7 @@ class Member(object):
         else:
             vars['entries'] = self.resource.entry_set.filter(public=True).order_by('-created')
 
-        return render(self, request, vars)
+        return fn_rest.render(self, request, vars)
 Member = fn_rest.member(Member)
 
 
@@ -53,5 +50,5 @@ class New(object):
     def get(self, request):
         vars = {}
         vars['form'] = forms.Blog()
-        return render(self, request, vars)
+        return fn_rest.render(self, request, vars)
 New = fn_rest.cresource(New)

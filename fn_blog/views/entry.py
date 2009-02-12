@@ -1,4 +1,3 @@
-from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
 from django.contrib.auth.decorators import login_required
@@ -8,8 +7,6 @@ import fn_rest
 from fn_blog import models
 from fn_blog import forms
 
-
-render = fn_rest.renderer('fn_blog/entry')
 
 #@fn_rest.collection
 class Collection(object):
@@ -40,7 +37,7 @@ class Member(object):
         vars['entry'] = self.resource
         if request.user == vars['blog'].owner:
             vars['form'] = forms.Entry(instance=self.resource)
-        return render(self, request, vars)
+        return fn_rest.render(self, request, vars)
 
     @login_required
     @fn_rest.method
@@ -57,5 +54,5 @@ class New(object):
     def get(self, request):
         vars = {}
         vars['form'] = forms.Entry()
-        return render(self, request, vars)
+        return fn_rest.render(self, request, vars)
 New = fn_rest.cresource(New)

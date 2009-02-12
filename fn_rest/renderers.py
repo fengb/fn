@@ -11,12 +11,13 @@ def map_types(request):
     return [('text/html', 'html')]
 
 
-def render(directory, obj, request, vars):
+def render(obj, request, vars):
     #TODO: Verify acceptable resource can be returned before running method
     accepts = map_types(request.META['HTTP_ACCEPT'])
     for mimetype, filetype in accepts:
         try:
-            template = '%s/%s.%s' % (directory, obj.fn_rest_name, filetype)
+            template = '%s.%s' % (obj.fn_rest_target, filetype)
+            print template
             return render_template(template, vars, mimetype=mimetype,
                                    context_instance=RequestContext(request))
         except TemplateDoesNotExist:
@@ -24,6 +25,3 @@ def render(directory, obj, request, vars):
             pass
     #TODO: Use 406 instead
     raise Http404
-
-def renderer(directory):
-    return partial(render, directory)
