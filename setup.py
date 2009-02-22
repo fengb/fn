@@ -23,6 +23,6 @@ setup(
     description='fn is a Django web suite',
     author='Benjamin Feng',
     license='3-clause BSD',
-    packages=list(all_packages('fn_blog')) + list(all_packages('fn_creole')) + list(all_packages('fn_rest')),
+    packages=list(all_packages('fn_blog')) + list(all_packages('fn_creole')) + list(all_packages('fn_rest')) + list(all_packages('fn_category')),
     package_data={'fn_blog': list(all_files('fn_blog', 'templates'))},
 )

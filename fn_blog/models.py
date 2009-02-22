@@ -1,14 +1,10 @@
-from django.db import models
 from django.db.models import Model
-from django.db.models import ForeignKey
-from django.db.models import CharField, TextField, DateField, BooleanField
-from django.contrib.auth.models import User
-
+from django.db.models import ForeignKey, ManyToManyField
+from django.db.models import CharField, TextField, DateTimeField, BooleanField
 from django.db.models import permalink
 
-import string
-
-alphanumeric = string.lowercase + string.digits
+from django.contrib.auth.models import User
+from fn_category.models import Category
 
 
 class Blog(Model):
@@ -28,7 +24,8 @@ class Entry(Model):
     title = CharField(max_length=100)
     body = TextField()
     public = BooleanField()
-    created = DateField(auto_now_add=True)
+    categories = ManyToManyField(Category)
+    created = DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
