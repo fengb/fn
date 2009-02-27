@@ -10,7 +10,7 @@
       {% for entry in entries %}
         <li>
           <span class='date'>{{entry.created}}</span>
-          <a href='{{entry.get_absolute_url}}'>{{entry.title}}</a>
+          <a href='{%url fn_blog.views.entry entry.id%}'>{{entry.title}}</a>
         </li>
       {% endfor %}
     </ul>
@@ -18,7 +18,7 @@
     <p>No entries found</p>
   {% endif %}
 
-  {% if user.is_authenticated %}
-    <p><a href='{% url fn_blog.entry.new %}'>New Entry</a></p>
-  {% endif %}
+  {% ifequal blog.owner_id user.id %}
+    <p><a href='{%url fn_blog.views.entry_new%}'>New Entry</a></p>
+  {% endifequal %}
 {% endblock %}

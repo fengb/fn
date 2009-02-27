@@ -18,10 +18,6 @@ class Blog(Model):
     def __str__(self):
         return self.name
 
-    @permalink
-    def get_absolute_url(self):
-        return 'fn_blog.blog.__member__', [self.id]
-
 
 class Entry(Model):
     blog = ForeignKey(Blog)
@@ -32,7 +28,3 @@ class Entry(Model):
 
     def __str__(self):
         return self.title
-
-    @permalink
-    def get_absolute_url(self):
-        return 'fn_blog.entry.__member__', [self.id]

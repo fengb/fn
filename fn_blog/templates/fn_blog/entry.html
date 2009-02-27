@@ -7,7 +7,7 @@
 
 
 {% block content %}
-  <a href='{{entry.blog.get_absolute_url}}'>Back</a>
+  <a href='{%url fn_blog.views.blog entry.blog.id%}'>Back</a>
   <div>
     {{entry.body|fn_markup}}
   </div>

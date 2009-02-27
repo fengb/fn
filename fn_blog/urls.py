@@ -1,13 +1,13 @@
 from django.conf.urls.defaults import patterns, url
-import fn_rest
 
-from .views import blog, entry
+from . import views
 
 
 urlpatterns = patterns('',
-    #url(r'^blogs/', fn_rest.dispatch(blog)),
-    #url(r'^entries/', fn_rest.dispatch(entry)),
-)
+    url(r'^blogs/$', views.blog_list),
+    url(r'^blogs/(\d*)/$', views.blog),
 
-urlpatterns += fn_rest.patterns(r'^blogs/', blog, 'fn_blog.blog')
-urlpatterns += fn_rest.patterns(r'^entries/', entry, 'fn_blog.entry')
+    url(r'^entries/$', views.entry_list),
+    url(r'^entries/new$', views.entry_new),
+    url(r'^entries/(\d*)/$', views.entry),
+)
