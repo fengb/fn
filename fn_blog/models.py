@@ -4,11 +4,6 @@ from django.db.models import ForeignKey
 from django.db.models import CharField, TextField, DateField, BooleanField
 from django.contrib.auth.models import User
 
-from django.db.models import permalink
-
-import string
-
-alphanumeric = string.lowercase + string.digits
 
 
 class Blog(Model):
