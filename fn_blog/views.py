@@ -1,10 +1,7 @@
-from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
 
-from . import models, forms
+from . import models
 
 
 def blog_list(request):
@@ -29,30 +26,9 @@ def blog(request, id):
                              context_instance=RequestContext(request))
 
 
-@login_required
-def entry_new(request):
-    vars = {}
-    vars['form'] = forms.Entry()
-    return render_to_response('fn_blog/entry_new.html', vars,
-                             context_instance=RequestContext(request))
-
-
-@login_required
-def entry_list(request):
-    if request.method == 'POST':
-        entry = forms.Entry(request.POST).save()
-        return HttpResponseRedirect(reverse('fn_blog.views.entry', args=[entry.id]))
-
-
 def entry(request, id):
-    entry = models.Entry.objects.get(id=int(id))
-    if request.method == 'POST':
-        entry = forms.Entry(request.POST, instance=entry).save()
-
     vars = {}
-    vars['entry'] = entry
+    vars['entry'] = entry = models.Entry.objects.get(id=int(id))
     vars['blog'] = blog = entry.blog
-    if request.user == vars['blog'].owner:
-        vars['form'] = forms.Entry(instance=entry)
     return render_to_response('fn_blog/entry.html', vars,
                              context_instance=RequestContext(request))
