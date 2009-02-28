@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 
-
 from setuptools import setup, find_packages
 setup(
     name='fn',
@@ -14,7 +13,7 @@ setup(
 
     entry_points={
         'setuptools.file_finders': [
-            'hg = hgsetuptools:find_hg_files',
+            'hg = setuptools_hg:hg_file_finder',
         ],
     },
 )
