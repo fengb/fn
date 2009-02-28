@@ -1,6 +1,9 @@
 syntax: glob
+.*
 *.pyc
 *.sqlite*
 
 syntax: regexp
 ^build
+^dist
+^fn\.egg-info
