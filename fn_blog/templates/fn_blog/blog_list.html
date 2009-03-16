@@ -9,7 +9,7 @@
     {% for blog in blogs %}
       <li>
         <span class='user'>{{blog.owner}}</span>
-        <a href='{{blog.get_absolute_url}}'>{{blog.name}}</a>
+        <a href='{% url fn_blog.views.blog blog.id %}'>{{blog.name}}</a>
       </li>
     {% endfor %}
   </ul>

@@ -1,0 +1,3 @@
+{% for style in fn_style %}
+  <link href='{% url fn_style.views.style style.id %}' rel='stylesheet' type='text/css'/>
+{% endfor %}

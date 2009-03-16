@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load fn_markup %}
+
+
+{% block title %}{{blog.name}}{% endblock %}
+{% block content_title %}{{entry.title}}{% endblock %}
+
+
+{% block content %}
+  <a href='{% url fn_blog.views.blog entry.blog.id %}'>Back</a>
+  <div>
+    {{entry.body|fn_markup}}
+  </div>
+{% endblock %}
