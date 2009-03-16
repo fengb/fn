@@ -7,3 +7,7 @@ class Category(Model):
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def hierarchical(cls):
+        cls.objects.order_by('name')

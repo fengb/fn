@@ -1,0 +1,5 @@
+<ul>
+  {% for category in fn_category %}
+    <li><a href='{% url fn_category_view category.id %}'>{{category.name}}</a></li>
+  {% endfor %}
+</ul>
