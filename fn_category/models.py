@@ -10,4 +10,4 @@ class Category(Model):
 
     @classmethod
     def hierarchical(cls):
-        cls.objects.order_by('name')
+        return cls.objects.order_by('name')

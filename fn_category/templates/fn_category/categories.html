@@ -1,5 +1,13 @@
+{% load fn_category %}
+
 <ul>
   {% for category in fn_category %}
-    <li><a href='{% url fn_category_view category.id %}'>{{category.name}}</a></li>
+    {% if fn_category_selected|contains:category %}
+      <li class='selected'>
+    {% else %}
+      <li>
+    {% endif %}
+      <a href='{% url fn_category.views.category category.id %}'>{{category.name}}</a>
+    </li>
   {% endfor %}
 </ul>
