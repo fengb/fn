@@ -12,6 +12,12 @@ class Blog(Model):
     def __str__(self):
         return self.name
 
+    def entries_by_user(self, user):
+        if self.owner == user:
+            return self.entry_set.order_by('created')
+        else:
+            return self.entry_set.filter(public=True).order_by('created')
+
 
 class Entry(Model):
     blog = ForeignKey(Blog)
