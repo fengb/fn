@@ -1,5 +1,5 @@
 from django import template
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 from django.utils.safestring import mark_safe
 
 register = template.Library()
@@ -12,8 +12,16 @@ def contains(value, arg):
 
 @register.filter
 def link(value, arg):
-    """Very simple and naive link tag.
+    """Naive link tag. Requires value to be a partial.
 
-    Example: 'app.views.func'|link:1
+    Example: func_var|link:1
     """
-    return mark_safe(reverse(value, args=[arg]))
+    view = '%s.%s' % (value.func.__module__, value.func.__name__)
+    if value.keywords:
+        kwargs = {'category_id': arg}
+        kwargs.update(value.keywords)
+        return mark_safe(reverse(view, kwargs=kwargs))
+    else:
+        args = list(value.args)
+        args.append(arg)
+        return mark_safe(reverse(view, args=args))
