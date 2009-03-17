@@ -16,6 +16,7 @@ def link(value, arg):
 
     Example: func_var|link:1
     """
+    # TODO: Decouple from functools.partial
     view = '%s.%s' % (value.func.__module__, value.func.__name__)
     if value.keywords:
         kwargs = {'category_id': arg}
