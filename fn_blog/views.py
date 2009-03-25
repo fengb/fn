@@ -29,7 +29,7 @@ def blog_category(request, id, category_id):
     vars['fn_category_view'] = partial(blog_category, blog.id)
 
     category = models.Category.objects.get(id=int(category_id))
-    vars['entries'] = blog.entries_by_user.filter(categories=category)
+    vars['entries'] = blog.entries_by_user(request.user).filter(categories=category)
     vars['fn_category_selected'] = [category]
 
     return render_to_response('fn_blog/blog.html', vars,
