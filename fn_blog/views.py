@@ -17,7 +17,7 @@ def blog(request, id):
     vars = {}
     vars['blog'] = blog = models.Blog.objects.get(id=int(id))
     vars['entries'] = blog.entries_by_user(request.user)
-    vars['fn_category_view'] = partial(blog_category, id=blog.id)
+    vars['fn_category_view'] = partial(blog_category, blog.id)
 
     return render_to_response('fn_blog/blog.html', vars,
                               context_instance=RequestContext(request))
@@ -26,7 +26,7 @@ def blog(request, id):
 def blog_category(request, id, category_id):
     vars = {}
     vars['blog'] = blog = models.Blog.objects.get(id=int(id))
-    vars['fn_category_view'] = partial(blog_category, id=blog.id)
+    vars['fn_category_view'] = partial(blog_category, blog.id)
 
     category = models.Category.objects.get(id=int(category_id))
     vars['entries'] = blog.entries_by_user.filter(categories=category)
@@ -42,7 +42,7 @@ def entry(request, id):
     vars = {}
     vars['entry'] = entry
     vars['blog'] = blog = entry.blog
-    vars['fn_category_view'] = partial(blog_category, id=blog.id)
+    vars['fn_category_view'] = partial(blog_category, blog.id)
     vars['fn_category_selected'] = set(entry.categories.iterator())
     return render_to_response('fn_blog/entry.html', vars,
                               context_instance=RequestContext(request))
