@@ -42,7 +42,7 @@ def entry(request, id):
     vars = {}
     vars['entry'] = entry
     vars['blog'] = blog = entry.blog
-    vars['fn_category_view'] = partial(blog_view, id=blog.id)
+    vars['fn_category_view'] = partial(blog_category, id=blog.id)
     vars['fn_category_selected'] = set(entry.categories.iterator())
     return render_to_response('fn_blog/entry.html', vars,
                               context_instance=RequestContext(request))
