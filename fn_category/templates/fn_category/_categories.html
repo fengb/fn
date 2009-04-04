@@ -1,7 +1,7 @@
 {% load fn_category %}
 {% load fn_url %}
 
-<ul>
+<ul id='fn_category'>
   {% if fn_category_view %}
     {% for category in fn_category %}
       <li>
@@ -11,7 +11,7 @@
     {% endfor %}
   {% else %}
     {% for category in fn_category %}
-      <li>{{category}}</li>
+      <li><a>{{category}}</a></li>
     {% endfor %}
   {% endif %}
 </ul>
