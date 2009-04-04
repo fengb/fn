@@ -1,13 +1,17 @@
 {% load fn_category %}
+{% load fn_url %}
 
 <ul>
-  {% for category in fn_category %}
-    {% if fn_category_selected|contains:category %}
-      <li class='selected'>
-    {% else %}
+  {% if fn_category_view %}
+    {% for category in fn_category %}
       <li>
-    {% endif %}
-      <a href='{{fn_category_view|link:category.id}}'>{{category}}</a>
-    </li>
-  {% endfor %}
+          <a {% if fn_category_selected|contains:category %}class='selected'{% endif %}
+            href='{{fn_category_view|fn_url:category.id}}'>{{category}}</a>
+      </li>
+    {% endfor %}
+  {% else %}
+    {% for category in fn_category %}
+      <li>{{category}}</li>
+    {% endfor %}
+  {% endif %}
 </ul>
