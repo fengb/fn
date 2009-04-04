@@ -5,7 +5,7 @@
   {% if fn_category_view %}
     {% for category in fn_category %}
       <li>
-          <a {% if fn_category_selected|contains:category %}class='selected'{% endif %}
+        <a {% if fn_category_selected|contains:category %}class='selected'{% endif %}
             href='{{fn_category_view|fn_url:category.id}}'>{{category}}</a>
       </li>
     {% endfor %}
