@@ -24,7 +24,8 @@ def blog(request, id):
 def blog_category(request, id, category_id):
     blog = models.Blog.objects.get(id=int(id))
     category = models.Category.objects.get(id=int(category_id))
-    entries = blog.entries_by_user(request.user).filter(categories=category)
+    entries = blog.entries_by_user(request.user)
+    entries = entries.filter(categories__in=category.descendants(inclusive=True))
     fn_category_view = partial(blog_category, blog.id)
     fn_category_selected = [category]
 
