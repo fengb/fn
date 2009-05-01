@@ -11,31 +11,33 @@ class TweetSender(object):
         self.sender = sender
         self.instance = instance
 
-        if hasattr(sender, 'owner'):
-            try:
-                self.user = TwitterUser.objects.get(django_user=self.instance.owner)
-            except models.ObjectDoesNotExist:
-                self.user = None
-        else:
-            self.user = None
+    @property
+    def user(self):
+        if not hasattr(self, '_user'):
+            self._user = TwitterUser.objects.get(django_user=self.instance.owner)
+        return self._user
+
+    @property
+    def watcher(self):
+        if not hasattr(self, '_watcher'):
+            sender_type = ContentType.objects.get_for_model(self.sender)
+            self._watcher = self.user.updatewatcher_set.get(content_type=sender_type)
+        return self._watcher
+
+    @property
+    def message(self):
+        return self.watcher.message % vars(self.instance)
 
     def tweetable(self):
-        if self.user:
-            try:
-                sender_type = ContentType.objects.get_for_model(self.sender)
-                watcher = self.user.updatewatcher_set.get(content_type=sender_type)
-                return watcher.active
-            except models.ObjectDoesNotExist:
-                return False
-        else:
+        try:
+            return self.watcher.active
+        except models.ObjectDoesNotExist:
+            return False
+        except models.AttributeError:
             return False
 
     def send(self):
-        twitter.Twitter(self.user.username, self.user.password).statuses.update(status=self.message())
-
-    def message(self):
-        return 'Updated %s(%s): %s' % (self.sender.__name__, self.instance,
-                                   settings.URL_BASE + self.instance.get_absolute_url())
+        twitter.Twitter(self.user.username, self.user.password).statuses.update(status=self.message)
 
 def send_tweet(sender, instance, *args, **kwargs):
     sender = TweetSender(sender, instance)

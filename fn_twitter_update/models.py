@@ -15,6 +15,7 @@ class TwitterUser(models.Model):
 class UpdateWatcher(models.Model):
     user = models.ForeignKey(TwitterUser)
     content_type = models.ForeignKey(ContentType)
+    message = models.CharField(max_length=140)
     active = models.BooleanField()
 
     def __str__(self):

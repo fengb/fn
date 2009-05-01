@@ -10,10 +10,6 @@ class Blog(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
-    def get_absolute_url(self):
-        return 'fn_blog.views.blog', str(self.id)
-
     def entries_by_user(self, user):
         if self.owner == user:
             return self.entry_set.order_by('-created')
@@ -31,10 +27,6 @@ class Entry(models.Model):
 
     def __str__(self):
         return self.title
-
-    @models.permalink
-    def get_absolute_url(self):
-        return 'fn_blog.views.entry', str(self.id)
 
     @property
     def owner(self):
