@@ -33,7 +33,7 @@ class TweetSender(object):
             return self.watcher.active
         except models.ObjectDoesNotExist:
             return False
-        except models.AttributeError:
+        except AttributeError:
             return False
 
     def send(self):
