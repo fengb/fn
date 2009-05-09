@@ -22,12 +22,12 @@ class Entry(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     public = models.BooleanField()
-    categories = models.ManyToManyField(Category)
+    categories = models.ManyToManyField(Category, blank=True)
     created = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
 
     @property
-    def owner(self):
+    def user(self):
         return self.blog.owner
