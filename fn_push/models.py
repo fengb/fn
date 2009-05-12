@@ -48,4 +48,4 @@ class Updater(models.Model):
         return str(self.manager)
 
     def send(self, message):
-        self.updater(self.username, self.password, message)
+        updaters[self.updater](self.username, self.password, message)
