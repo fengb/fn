@@ -45,7 +45,7 @@ class Updater(models.Model):
     updater = models.CharField(max_length=100, choices=updaters.choices())
 
     def __str__(self):
-        return str(self.manager)
+        return '%s: %s' % (self.manager, self.updater)
 
     def send(self, message):
         updaters[self.updater](self.username, self.password, message)
