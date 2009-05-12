@@ -1,10 +1,7 @@
-from creoleparser import creole_to_xhtml as render
+from fn_creole.templatetags.fn_creole import fn_creole
 from django import template
-from django.utils.safestring import mark_safe
 
 register = template.Library()
 
 
-@register.filter
-def fn_markup(string):
-    return mark_safe(render(string))
+register.filter('fn_markup', fn_creole)
