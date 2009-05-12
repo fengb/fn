@@ -1,2 +1,2 @@
 Source shamelessly taken from http://mike.verdone.ca/twitter/
-Modified to use https and extracted out non-library files.
+Modified to use https and removed non-library files.
