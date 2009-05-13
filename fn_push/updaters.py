@@ -1,6 +1,5 @@
-from functools import partial
-
-from . import twitter
+from django.conf import settings
+from . import twitter, facebook
 
 
 class UpdaterCache(object):
@@ -47,3 +46,11 @@ def register(arg):
 @register('twitter')
 def twitterupdate(username, password, message):
     twitter.Twitter(username, password).statuses.update(status=message)
+
+
+@register('facebook')
+def facebookupdate(username, password, message):
+    f = facebook.Facebook(settings.FN_PUSH_FACEBOOK_API_KEY,
+                          settings.FN_PUSH_FACEBOOK_SECRET_KEY)
+    f.session_key = settings.FN_PUSH_FACEBOOK_SESSION_KEY
+    f.status.set(uid=username, status=message)
