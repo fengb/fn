@@ -42,10 +42,10 @@ class Updater(models.Model):
     manager = models.OneToOneField(Manager)
     username = models.CharField(max_length=100)
     password = models.CharField(max_length=200)
-    updater = models.CharField(max_length=100, choices=updaters.choices())
+    updater = models.CharField(max_length=100, choices=updaters.cache.choices())
 
     def __str__(self):
         return '%s: %s' % (self.manager, self.updater)
 
     def send(self, message):
-        updaters[self.updater](self.username, self.password, message)
+        updaters.cache[self.updater](self.username, self.password, message)

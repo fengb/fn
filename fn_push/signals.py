@@ -5,8 +5,8 @@ from django.db.models import signals
 from . import models
 
 
-def callback(sender, instance, *args, **kwargs):
-    if hasattr(instance, 'user'):
+def callback(sender, instance, created, **kwargs):
+    if created and hasattr(instance, 'user'):
         try:
             sender_type = ContentType.objects.get_for_model(sender)
             manager = models.Manager.objects.get(user=instance.user)

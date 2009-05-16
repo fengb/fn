@@ -1,5 +1,5 @@
 from django.conf import settings
-from . import twitter, facebook
+from . import twitter
 
 
 class UpdaterCache(object):
@@ -15,42 +15,32 @@ class UpdaterCache(object):
     def choices(self):
         return [(name, name) for name in self.funcs]
 
+    def add(self, arg):
+        """Add a function to be used as an updater
+        Note - the decorated function arguments must be (username, password, message)
 
-updater_cache = UpdaterCache()
-choices = updater_cache.choices
+        >>> @cache.register
+        >>> def awesome(username, password, message):
+        >>>     print username, password
+        >>>     print message
 
-def register(arg):
-    """Register a function to be used as an updater
-    Note - the arguments must be (username, password, message)
+        >>> @cache.register(name='awesome')
+        >>> def lessawesome(username, password, message):
+        >>>     print username, password
+        >>>     print message
+        """
+        if callable(arg):
+            self[arg.__name__] = arg
+            return arg
+        else:
+            def decorator(func):
+                self[arg] = func
+                return func
+            return decorator
 
-    >>> @register
-    >>> def awesome(username, password, message):
-    >>>     print username, password
-    >>>     print message
-
-    >>> @register(name='awesome')
-    >>> def lessawesome(username, password, message):
-    >>>     print username, password
-    >>>     print message
-    """
-    if callable(arg):
-        updater_cache[arg.__name__] = arg
-        return arg
-    else:
-        def decorator(func):
-            updater_cache[arg] = func
-            return func
-        return decorator
+cache = UpdaterCache()
 
 
-@register('twitter')
+@cache.add('twitter')
 def twitterupdate(username, password, message):
     twitter.Twitter(username, password).statuses.update(status=message)
-
-
-@register('facebook')
-def facebookupdate(username, password, message):
-    f = facebook.Facebook(settings.FN_PUSH_FACEBOOK_API_KEY,
-                          settings.FN_PUSH_FACEBOOK_SECRET_KEY)
-    f.session_key = settings.FN_PUSH_FACEBOOK_SESSION_KEY
-    f.status.set(uid=username, status=message)
