@@ -1,12 +1,10 @@
-import itertools
-from django.db.models import Model
-from django.db.models import CharField, ForeignKey
+from django.db import models
 
 
 #TODO: Make methods more Djangonic
-class Category(Model):
-    name = CharField(max_length=100)
-    parent = ForeignKey('self', null=True, blank=True)
+class Category(models.Model):
+    name = models.CharField(max_length=100)
+    parent = models.ForeignKey('self', null=True, blank=True)
 
     def children(self):
         return self.category_set.order_by('name')

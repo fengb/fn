@@ -1,12 +1,10 @@
-from django.db.models import Model
-from django.db.models import CharField, TextField
-from django.db.models import ForeignKey
+from django.db import models
 from django.contrib.auth.models import User
 
 
-class Style(Model):
-    owner = ForeignKey(User)
-    body = TextField()
+class Style(models.Model):
+    owner = models.ForeignKey(User)
+    body = models.TextField()
 
     def __str__(self):
         return str(self.id)

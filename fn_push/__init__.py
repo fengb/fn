@@ -1,1 +1,1 @@
-from . import signals #Eager load signals
+from . import admin, signals
