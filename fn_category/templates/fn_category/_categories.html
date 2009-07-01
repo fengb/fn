@@ -3,11 +3,12 @@
 {% if fn_category %}
   <ul>
     {% for category in fn_category %}
-      <li>
+      <li
+        {% if fn_category_selected|contains:category %}
+          class='selected'
+        {% endif %}
+      >
         <a
-          {% if fn_category_selected|contains:category %}
-            class='selected'
-          {% endif %}
           {% if fn_category_view %}
             href='{{fn_category_view|link:category.id}}'
           {% endif %}
