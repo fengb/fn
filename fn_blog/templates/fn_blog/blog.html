@@ -8,9 +8,14 @@
   {% if entries %}
     <ul>
       {% for entry in entries %}
-        <li>
+        <li class='entry'>
           <span class='date'>{{entry.created}}</span>
           <a href='{% url fn_blog.views.entry entry.id %}'>{{entry.title}}</a>
+          <span class='categories'>
+            {% for category in entry.categories %}
+              <a href='{% url fn_blog.views.blog_category%}'>{{category}}</a>
+            {% endfor %}
+          </span>
         </li>
       {% endfor %}
     </ul>
