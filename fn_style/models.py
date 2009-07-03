@@ -10,9 +10,10 @@ class Style(models.Model):
     body = models.TextField()
 
     def __str__(self):
-        return str(self.id)
+        return self.match
 
     @classmethod
     def all_from_url(cls, path):
         # Painfully poor performance
-        return [style for style in cls.objects.all() if re.match(style, path)]
+        return [style for style in cls.objects.all()
+                        if re.match(style.match, path)]

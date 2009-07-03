@@ -11,11 +11,11 @@
         <li class='entry'>
           <span class='date'>{{entry.created}}</span>
           <a href='{% url fn_blog.views.entry entry.id %}'>{{entry.title}}</a>
-          <span class='categories'>
-            {% for category in entry.categories %}
-              <a href='{% url fn_blog.views.blog_category%}'>{{category}}</a>
+          <div class='categories'>
+            {% for category in entry.categories.iterator %}
+	      <a href='{% url fn_blog.views.blog_category entry.blog.id category.id %}'>{{category}}</a>
             {% endfor %}
-          </span>
+          </div>
         </li>
       {% endfor %}
     </ul>
