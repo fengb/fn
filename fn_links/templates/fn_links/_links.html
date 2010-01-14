@@ -1,0 +1,11 @@
+<ul class='fn_links'>
+  <li>
+    {% for (owner, links) in fn_links %}
+      <ul>
+        {% for link in links %}
+          <li><a href='{{link.url}}'>{{link.text}}</a></li>
+        {% endfor %}
+      </ul>
+    {% endfor %}
+  </li>
+<ul>
