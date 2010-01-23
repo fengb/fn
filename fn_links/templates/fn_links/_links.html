@@ -1,11 +1,15 @@
-<ul class='fn_links'>
-  <li>
-    {% for (owner, links) in fn_links %}
-      <ul>
+{% load fn_links %}
+
+<ul id='fn_links' class='nav'>
+  <li class='user'>
+    {% for owner, links in fn_links %}
+      <h3>{{owner}}</h3>
+      <ul class='nav'>
         {% for link in links %}
-          <li><a href='{{link.url}}'>{{link.text}}</a></li>
+          <li><a {% if request and request.path|contains:link.url %}class='selected'{% endif %}
+                 href='{{link.url}}'>{{link.text}}</a></li>
         {% endfor %}
       </ul>
     {% endfor %}
   </li>
-<ul>
+</ul>
