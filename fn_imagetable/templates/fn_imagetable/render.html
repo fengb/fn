@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Render{% endblock %}
+
+{% block style_extra %}
+  {{imagetable.styles}}
+{% endblock %}
+
+{% block content %}
+  {{imagetable.table|safe}}
+  <textarea>{{imagetable.styles}}</textarea>
+  <textarea>{{imagetable.table}}</textarea>
+{% endblock %}
