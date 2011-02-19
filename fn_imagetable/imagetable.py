@@ -51,26 +51,24 @@ class ImageTable(object):
 
     def styles(self, fout):
         fout.write('''
-table.%s{border-collapse:collapse;border-spacing:0;width:auto;height:auto}
-table.%s td{width:1px;height:1px;padding:0}
-        ''' % (self.c, self.c))
+div.%(class)s{width:%(width)s;}
+div.%(class)s p{float:left;width:1px;height:1px;padding:0;margin:0}
+        ''' % {'class': self.c, 'width': self.image.size[0]})
         for (color, cls) in self.color_classes.items():
-            fout.write('table.%s .%s{background:#%02x%02x%02x}' % ((self.c, cls) + color))
+            fout.write('div.%s .%s{background:#%02x%02x%02x}' % ((self.c, cls) + color))
 
-    def table(self, fout):
-        fout.write('<table class="%s">' % self.c)
+    def main(self, fout):
+        fout.write('<div class="%s">' % self.c)
         for y in range(self.image.size[1]):
-            fout.write('<tr>')
             for x in range(self.image.size[0]):
-                fout.write('<td %s></td>' % self.cellattr(x, y))
-            fout.write('</tr>')
-        fout.write('</table>')
+                fout.write('<p %s></p>' % self.cellattr(x, y))
+        fout.write('</div>')
 
     def html(self, fout):
         fout.write('<html><head><style>')
         self.styles(fout)
         fout.write('</style><body>')
-        self.table(fout)
+        self.main(fout)
         fout.write('</body></html>')
 
 
